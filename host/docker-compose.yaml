@@ -1,7 +1,8 @@
 version: "3"
 
 services:
-  otel-collector:
+  host-otel-collector:
+    container_name: host-otel-collector
     image: otel/opentelemetry-collector-contrib:latest
     command: --config=/etc/collector/otel-collector-config.yaml
     volumes:
@@ -15,6 +16,7 @@ services:
       - HOSTNAME: ${HOSTNAME}
 
   prometheus:
+    container_name: prometheus
     image: prometheus/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml

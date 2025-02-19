@@ -10,6 +10,7 @@ services:
     ports:
       - "4317:4317"
       - "4318:4318"
+      - "8889:8889" # Prometheus exporter
     networks:
       - otlp
     environment:
@@ -20,9 +21,25 @@ services:
     image: prometheus/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/prometheus
     ports:
       - "9090:9090"
     networks:
       - otlp
+  grafana:
+    container_name: grafana
+    restart: unless-stopped
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - otlp
+
 networks:
   otlp:
+
+volumes:
+  grafana-storage:
+  prometheus-storage:

@@ -24,13 +24,12 @@ receivers:
     collection_interval: 10s
     scrapers:
       cpu:
+      load:
       memory:
-
-  hostmetrics/disk:
-    collection_interval: 10s
-    scrapers:
       disk:
       filesystem:
+      network:
+      processes:
 
 # Processors
 processors:
@@ -48,6 +47,8 @@ exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
     namespace: ${HOSTNAME}
+    resource_to_telemetry_conversion:
+      enabled: true
 
 # Pipelines
 service:
@@ -57,6 +58,6 @@ service:
     #   processors: [batch]
     #   exporters: [debug, otlphttp/logs]
     metrics:
-      receivers: [hostmetrics, hostmetrics/disk]
+      receivers: [hostmetrics]
       processors: [batch]
       exporters: [debug, prometheus]

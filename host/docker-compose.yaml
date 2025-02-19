@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   host-otel-collector:
     container_name: host-otel-collector
@@ -34,6 +32,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+      - ./grafana-provisioning/:/etc/grafana/provisioning/
     networks:
       - otlp
 

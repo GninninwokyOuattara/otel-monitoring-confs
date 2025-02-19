@@ -5,6 +5,7 @@ services:
     command: --config=/etc/collector/otel-collector-config.yaml
     volumes:
       - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml
+      - /:/hostfs # mount host filesystem,  needed for hostmetrics
     ports:
       - "4317:4317"
       - "4318:4318"

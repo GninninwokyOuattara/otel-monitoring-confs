@@ -1,0 +1,62 @@
+# Receivers
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  # filelog:
+  #   include: [/pg_log/*.log]
+  #   # operators:
+  #   #   - type: regex_parser
+  #   #     regex: '^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [A-Z]+) (?P<severity>[A-Z]+):  (?P<message>.*)$'
+  #   #     timestamp:
+  #   #       parse_from: attributes.timestamp
+  #   #       layout: "%Y-%m-%d %H:%M:%S %Z"
+  #   #     severity:
+  #   #       parse_from: attributes.severity
+  #   operators:
+  #     - type: add
+  #       field: resource["service.name"]
+  #       value: pg
+  hostmetrics:
+    collection_interval: 10s
+    scrapers:
+      cpu:
+      memory:
+
+  hostmetrics/disk:
+    collection_interval: 10s
+    scrapers:
+      disk:
+      filesystem:
+
+# Processors
+processors:
+  batch:
+
+# Exporters
+exporters:
+  otlphttp/logs:
+    endpoint: "http://host.docker.internal:3100/otlp"
+    tls:
+      insecure: true
+  debug:
+    # verbosity: detailed
+
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: ${HOSTNAME}
+
+# Pipelines
+service:
+  pipelines:
+    # logs:
+    #   receivers: [filelog]
+    #   processors: [batch]
+    #   exporters: [debug, otlphttp/logs]
+    metrics:
+      receivers: [hostmetrics, hostmetrics/disk]
+      processors: [batch]
+      exporters: [debug, prometheus]

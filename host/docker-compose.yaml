@@ -42,6 +42,18 @@ services:
     networks:
       - otlp
 
+    loki:
+      privileged: true
+      container_name: loki
+      restart: unless-stopped
+      image: grafana/loki:latest
+      ports:
+        - "3100:3100"
+      volumes:
+        - loki-storage:/var/lib/loki
+      networks:
+        - otlp
+
 networks:
   otlp:
 

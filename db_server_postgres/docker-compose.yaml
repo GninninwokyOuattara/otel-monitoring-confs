@@ -2,12 +2,12 @@ services:
   otel-collector:
     privileged: true
     network_mode: "host"
-    container_name: host-otel-collector
+    container_name: otel-collector
     image: otel/opentelemetry-collector-contrib:latest
     command: --config=/etc/collector/otel-collector-config.yaml
     volumes:
       - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml
-      - /:/hostfs # mount host filesystem,  needed for hostmetrics
+      - /:/hostfs:ro # mount host filesystem,  needed for hostmetrics
       - /oracle/data/log:/pg_log
     ports:
       - "4317:4317"

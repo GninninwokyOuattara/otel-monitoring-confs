@@ -1,0 +1,81 @@
+# Receivers
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  # filelog:
+  #   include: [/pg_log/*.log]
+  #   # operators:
+  #   #   - type: regex_parser
+  #   #     regex: '/^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>.+)$'
+  #   #     timestamp:
+  #   #       parse_from: attributes.timestamp
+  #   #       layout: "%Y-%m-%d %H:%M:%S %Z"
+  #   #     severity:
+  #   #       parse_from: attributes.severity
+  #   operators:
+  #     - type: add
+  #       field: resource["service.name"]
+  #       value: pg
+  hostmetrics:
+    collection_interval: 10s
+    scrapers:
+      cpu:
+      load:
+      memory:
+      disk:
+      filesystem:
+      network:
+      processes:
+  postgresql:
+    endpoint: 192.168.1.224:5432
+    transport: tcp
+    username: user_beasy
+    password: BarnoinBeasyBD@224
+    databases: # empty will monitor all databases non-templates.
+    collection_interval: 10s
+    tls:
+      insecure: true
+
+# Processors
+processors:
+  batch:
+
+# Exporters
+exporters:
+  otlphttp/logs:
+    endpoint: "http://host.docker.internal:3100/otlp"
+    tls:
+      insecure: true
+  debug:
+    # verbosity: detailed
+
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: host_srv
+    resource_to_telemetry_conversion:
+      enabled: true
+  prometheus/pg:
+    endpoint: "0.0.0.0:8887"
+    namespace: srv_beasy_224
+    resource_to_telemetry_conversion:
+      enabled: true
+
+# Pipelines
+service:
+  pipelines:
+    # logs:
+    #   receivers: [filelog]
+    #   processors: [batch]
+    #   exporters: [debug, otlphttp/logs]
+    metrics:
+      receivers: [hostmetrics]
+      processors: [batch]
+      exporters: [debug, prometheus]
+    metrics/pg:
+      receivers: [postgresql]
+      processors: [batch]
+      exporters: [debug, prometheus/pg]

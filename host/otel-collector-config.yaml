@@ -30,6 +30,12 @@ receivers:
       filesystem:
       network:
       processes:
+  postgresql:
+    endpoint: 192.168.1.224:5432
+    transport: tcp
+    username: user_beasy
+    password: BarnoinBeasyBD@224
+    collection_interval: 10s
 
 # Processors
 processors:
@@ -58,6 +64,6 @@ service:
     #   processors: [batch]
     #   exporters: [debug, otlphttp/logs]
     metrics:
-      receivers: [hostmetrics]
+      receivers: [hostmetrics, postgresql]
       processors: [batch]
       exporters: [debug, prometheus]

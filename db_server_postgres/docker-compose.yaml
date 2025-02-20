@@ -1,0 +1,19 @@
+network_mode: "host"
+services:
+  otel-collector:
+    privileged: true
+    container_name: host-otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    command: --config=/etc/collector/otel-collector-config.yaml
+    volumes:
+      - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml:ro
+        - /:/hostfs:ro # mount host filesystem,  needed for hostmetrics
+      - /oracle/data/log:/pg_log:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
+    environment:
+      - HOSTNAME=srv_beasy_db
+      - LOG_DIR_PATH=${LOG_DIR_PATH}
+      - REMOTE_COLLECTOR_ENDPOINT=${REMOTE_COLLECTOR_ENDPOINT}

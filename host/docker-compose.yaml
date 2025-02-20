@@ -1,11 +1,12 @@
 services:
   host-otel-collector:
+    priviled: true
     container_name: host-otel-collector
     image: otel/opentelemetry-collector-contrib:latest
     command: --config=/etc/collector/otel-collector-config.yaml
     volumes:
-      - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml
-      - /:/hostfs # mount host filesystem,  needed for hostmetrics
+      - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml:ro
+      - /:/hostfs:ro # mount host filesystem,  needed for hostmetrics
     ports:
       - "4317:4317"
       - "4318:4318"
@@ -16,17 +17,19 @@ services:
       - HOSTNAME=${HOSTNAME}
 
   prometheus:
+    privileged: true
     container_name: prometheus
     restart: unless-stopped
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-storage:/prometheus
     ports:
       - "9090:9090"
     networks:
       - otlp
   grafana:
+    priviled: true
     container_name: grafana
     restart: unless-stopped
     image: grafana/grafana:latest
@@ -34,7 +37,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana-provisioning/:/etc/grafana/provisioning/
+      - ./grafana-provisioning/:/etc/grafana/provisioning/:ro
     networks:
       - otlp
 

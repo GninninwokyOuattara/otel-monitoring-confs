@@ -1,12 +1,5 @@
 # Receivers
 receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
-
   filelog:
     include: [/pg_log/*.log]
     operators:
@@ -33,7 +26,7 @@ receivers:
       processes:
 
   postgresql:
-    endpoint: localhost:5432
+    endpoint: 192.168.1.224:5432
     transport: tcp
     username: user_beasy
     password: BarnoinBeasyBD@224

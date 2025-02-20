@@ -31,4 +31,4 @@ scrape_configs:
   - job_name: "host-otel-collector"
     scrape_interval: 10s
     static_configs:
-      - targets: ["host-otel-collector:8889"]
+      - targets: ["host-otel-collector:8889", "host-otel-collector:8887"]

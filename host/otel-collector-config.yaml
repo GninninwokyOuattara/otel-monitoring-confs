@@ -35,7 +35,10 @@ receivers:
     transport: tcp
     username: user_beasy
     password: BarnoinBeasyBD@224
+    databases: # empty will monitor all databases non-templates.
     collection_interval: 10s
+    tls:
+      insecure: true
 
 # Processors
 processors:
@@ -52,7 +55,12 @@ exporters:
 
   prometheus:
     endpoint: "0.0.0.0:8889"
-    namespace: ${HOSTNAME}
+    namespace: host_srv
+    resource_to_telemetry_conversion:
+      enabled: true
+  prometheus/pg:
+    endpoint: "0.0.0.0:8887"
+    namespace: srv_beasy_224
     resource_to_telemetry_conversion:
       enabled: true
 
@@ -64,6 +72,10 @@ service:
     #   processors: [batch]
     #   exporters: [debug, otlphttp/logs]
     metrics:
-      receivers: [hostmetrics, postgresql]
+      receivers: [hostmetrics]
       processors: [batch]
       exporters: [debug, prometheus]
+    metrics/pg:
+      receivers: [postgresql]
+      processors: [batch]
+      exporters: [debug, prometheus/pg]

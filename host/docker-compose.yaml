@@ -11,6 +11,7 @@ services:
       - "4317:4317"
       - "4318:4318"
       - "8889:8889" # Prometheus exporter
+      - "8888:8888" # Prometheus exporter
     networks:
       - otlp
     environment:

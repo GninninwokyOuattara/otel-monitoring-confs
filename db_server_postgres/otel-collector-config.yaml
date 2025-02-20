@@ -51,6 +51,11 @@ exporters:
     tls:
       insecure: true
 
+  otlphttp:
+    endpoint: "http://192.168.1.232:4318"
+    tls:
+      insecure: true
+
   debug:
     # verbosity: detailed
 
@@ -60,8 +65,8 @@ service:
     logs/pg:
       receivers: [filelog]
       processors: [batch]
-      exporters: [debug, otlp]
-    metrics:
-      receivers: [hostmetrics, postgresql]
-      processors: [batch]
-      exporters: [debug, otlp]
+      exporters: [debug, otlphttp]
+    # metrics:
+    #   receivers: [hostmetrics, postgresql]
+    #   processors: [batch]
+    #   exporters: [debug, otlp]

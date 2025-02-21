@@ -3,13 +3,13 @@ receivers:
   filelog:
     include: [/pg_log/*.log]
     operators:
-      - type: regex_parser
-        regex: '/^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>.+)$'
-        timestamp:
-          parse_from: attributes.timestamp
-          layout: "%Y-%m-%d %H:%M:%S %Z"
-        severity:
-          parse_from: attributes.severity
+      # - type: regex_parser
+      #   regex: '/^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>.+)$'
+      #   timestamp:
+      #     parse_from: attributes.timestamp
+      #     layout: "%Y-%m-%d %H:%M:%S %Z"
+      #   severity:
+      #     parse_from: attributes.severity
       - type: add
         field: resource["service.name"]
         value: beasy_postgres_dev_224

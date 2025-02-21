@@ -32,6 +32,12 @@ receivers:
     tls:
       insecure: true
 
+extensions:
+  file_storage/filelogreceiver:
+    directory: /var/lib/otelcol/file_storage/receiver
+  file_storage/otlpoutput:
+    directory: /var/lib/otelcol/file_storage/output
+
 # Processors
 processors:
   memory_limiter:
@@ -58,16 +64,24 @@ exporters:
     tls:
       insecure: true
 
+  otlphttp/logs:
+    endpoint: "http://192.168.1.232:4318"
+    sending_queue:
+      storage: file_storage/otlpoutput
+    tls:
+      insecure: true
+
   debug:
     # verbosity: detailed
 
 # Pipelines
 service:
+  extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
     logs/pg:
       receivers: [filelog]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [debug, otlphttp]
+      exporters: [debug, otlphttp/logs]
     metrics:
       receivers: [hostmetrics, postgresql]
       processors: [memory_limiter, resourcedetection/env, batch]

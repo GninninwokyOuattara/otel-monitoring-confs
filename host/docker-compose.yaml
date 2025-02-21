@@ -15,7 +15,7 @@ services:
     networks:
       - otlp
     environment:
-      OTEL_RESOURCE_ATTRIBUTES: service.name=host_computer #Will be picked up by resource detection
+      OTEL_RESOURCE_ATTRIBUTES: service.name=srv_232 #Will be picked up by resource detection
 
   prometheus:
     privileged: true

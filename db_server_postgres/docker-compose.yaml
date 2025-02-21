@@ -14,6 +14,6 @@ services:
     #   - "4318:4318"
 
     environment:
-      - HOSTNAME=srv_beasy_db
-      - LOG_DIR_PATH=${LOG_DIR_PATH}
-      - REMOTE_COLLECTOR_ENDPOINT=${REMOTE_COLLECTOR_ENDPOINT}
+      OTEL_RESOURCE_ATTRIBUTES: service.name=srv_224 #Will be picked up by resource detection
+      # - LOG_DIR_PATH=${LOG_DIR_PATH}
+      # - REMOTE_COLLECTOR_ENDPOINT=${REMOTE_COLLECTOR_ENDPOINT}

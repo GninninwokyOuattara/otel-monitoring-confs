@@ -60,3 +60,4 @@ networks:
 volumes:
   grafana-storage:
   prometheus-storage:
+  loki-storage:

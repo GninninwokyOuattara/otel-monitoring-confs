@@ -8,6 +8,7 @@ receivers:
         endpoint: 0.0.0.0:4318
 
   hostmetrics:
+    root_path: /hostfs
     collection_interval: 10s
     scrapers:
       cpu:

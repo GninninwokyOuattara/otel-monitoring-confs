@@ -13,35 +13,34 @@ receivers:
     scrapers:
       cpu:
         metrics:
-          system.cpu.utilization:
-            enabled: true
-          system.cpu.physical.count:
-            enabled: true
           system.cpu.logical.count:
             enabled: true
-          system.cpu.frequency:
-            enabled: true
-
-      load:
       memory:
         metrics:
           system.memory.utilization:
             enabled: true
-          system.linux.memory.available:
-            enabled: true
           system.memory.limit:
             enabled: true
-
+      load:
       disk:
       filesystem:
         metrics:
           system.filesystem.utilization:
             enabled: true
-
       network:
+      paging:
       processes:
       process:
-      system:
+        mute_process_user_error: true
+        metrics:
+          process.cpu.utilization:
+            enabled: true
+          process.memory.utilization:
+            enabled: true
+          process.threads:
+            enabled: true
+          process.paging.faults:
+            enabled: true
 
 # Processors
 processors:

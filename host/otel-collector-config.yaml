@@ -39,7 +39,7 @@ exporters:
     tls:
       insecure: true
   debug:
-    verbosity: detailed
+    # verbosity: detailed
 
   prometheus/host:
     endpoint: "0.0.0.0:8889"

@@ -59,7 +59,7 @@ service:
       processors: [memory_limiter, batch]
       exporters: [debug, otlphttp/logs]
     metrics/host:
-      receivers: [hostmetrics, postgresql]
+      receivers: [hostmetrics]
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [debug, prometheus/host]
     metrics/others:

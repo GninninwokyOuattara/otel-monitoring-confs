@@ -2,6 +2,10 @@
 receivers:
   filelog:
     include: [/pg_log/*.log]
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    storage: file_storage/pg-db
     operators:
       - type: regex_parser
         regex: '/^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>.+)$'
@@ -33,10 +37,9 @@ receivers:
       insecure: true
 
 extensions:
-  file_storage/filelogreceiver:
-    directory: /var/lib/otelcol/file_storage/receiver
-  file_storage/otlpoutput:
-    directory: /var/lib/otelcol/file_storage/output
+  file_storage/pg-db:
+    create_directory: true
+    directory: /var/lib/otelcol/file_storage/pg-db
 
 # Processors
 processors:
@@ -69,8 +72,13 @@ exporters:
   otlphttp/logs:
     logs_endpoint: "http://192.168.1.232:4318"
     metrics_endpoint: "http://192.168.1.232:4318"
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
     sending_queue:
-      storage: file_storage/otlpoutput
+      enabled: true
+      queue_size: 100
+      storage: file_storage/pg-db
     tls:
       insecure: true
 
@@ -79,7 +87,7 @@ exporters:
 
 # Pipelines
 service:
-  extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
+  extensions: [file_storage/pg-db]
   pipelines:
     logs/pg:
       receivers: [filelog]

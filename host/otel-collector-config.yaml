@@ -83,7 +83,7 @@ service:
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlphttp/logs]
+      exporters: [debug, otlphttp/logs]
     metrics/host:
       receivers: [hostmetrics]
       processors: [memory_limiter, resourcedetection/env, batch]

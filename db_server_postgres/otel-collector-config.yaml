@@ -111,7 +111,7 @@ service:
     logs/pg:
       receivers: [filelog]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [otlp]
+      exporters: [debug, otlp]
     metrics:
       receivers: [hostmetrics, postgresql]
       processors: [memory_limiter, resourcedetection/env, batch]

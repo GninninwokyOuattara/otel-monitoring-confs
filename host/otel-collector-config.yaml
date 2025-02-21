@@ -6,20 +6,7 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-  # filelog:
-  #   include: [/pg_log/*.log]
-  #   # operators:
-  #   #   - type: regex_parser
-  #   #     regex: '^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [A-Z]+) (?P<severity>[A-Z]+):  (?P<message>.*)$'
-  #   #     timestamp:
-  #   #       parse_from: attributes.timestamp
-  #   #       layout: "%Y-%m-%d %H:%M:%S %Z"
-  #   #     severity:
-  #   #       parse_from: attributes.severity
-  #   operators:
-  #     - type: add
-  #       field: resource["service.name"]
-  #       value: pg
+
   hostmetrics:
     collection_interval: 10s
     scrapers:
@@ -30,18 +17,19 @@ receivers:
       filesystem:
       network:
       processes:
-  # postgresql:
-  #   endpoint: 192.168.1.224:5432
-  #   transport: tcp
-  #   username: user_beasy
-  #   password: BarnoinBeasyBD@224
-  #   databases: # empty will monitor all databases non-templates.
-  #   collection_interval: 10s
-  #   tls:
-  #     insecure: true
 
 # Processors
 processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 15
+
+  resourcedetection/env:
+    detectors: [env]
+    timeout: 2s
+    override: false
+
   batch:
 
 # Exporters
@@ -51,35 +39,30 @@ exporters:
     tls:
       insecure: true
   debug:
-    # verbosity: detailed
+    verbosity: detailed
 
   prometheus/host:
     endpoint: "0.0.0.0:8889"
-    namespace: host
+    namespace: host_metrics
     resource_to_telemetry_conversion:
       enabled: true
   prometheus/others:
     endpoint: "0.0.0.0:8887"
-    # namespace: srv_beasy_232 # They should come with their namespace.
     resource_to_telemetry_conversion:
       enabled: true
 
-# Pipelines
+# # Pipelines
 service:
   pipelines:
-    # logs:
-    #   receivers: [filelog]
-    #   processors: [batch]
-    #   exporters: [debug, otlphttp/logs]
     logs:
       receivers: [otlp]
-      processors: [batch]
+      processors: [memory_limiter, batch]
       exporters: [debug, otlphttp/logs]
     metrics/host:
       receivers: [hostmetrics, postgresql]
-      processors: [batch]
+      processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [debug, prometheus/host]
     metrics/others:
       receivers: [otlp]
-      processors: [batch]
+      processors: [memory_limiter, batch]
       exporters: [debug, prometheus/others]

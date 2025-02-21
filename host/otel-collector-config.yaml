@@ -82,12 +82,12 @@ service:
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlphttp/logs]
+      exporters: [otlphttp/logs]
     metrics/host:
       receivers: [hostmetrics]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [debug, prometheus/host]
+      exporters: [prometheus/host]
     metrics/others:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, prometheus/others]
+      exporters: [prometheus/others]

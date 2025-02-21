@@ -41,6 +41,7 @@ receivers:
       network:
       processes:
       process:
+        mute_process_all_errors: true
       system:
 
 # Processors

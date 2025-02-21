@@ -62,15 +62,14 @@ processors:
 exporters:
   otlp:
     endpoint: "http://192.168.1.232:4317"
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      storage: file_storage/otlpoutput
     tls:
       insecure: true
 
   otlphttp:
-    endpoint: "http://192.168.1.232:4318"
-    tls:
-      insecure: true
-
-  otlphttp/logs:
     endpoint: "http://192.168.1.232:4318"
     retry_on_failure:
       enabled: true
@@ -89,8 +88,8 @@ service:
     logs/pg:
       receivers: [filelog]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [debug, otlphttp/logs]
+      exporters: [debug, otlp]
     metrics:
       receivers: [hostmetrics, postgresql]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [debug, otlphttp]
+      exporters: [debug, otlp]

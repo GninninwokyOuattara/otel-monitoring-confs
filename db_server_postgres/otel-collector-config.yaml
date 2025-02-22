@@ -1,6 +1,7 @@
 # Receivers
 receivers:
   filelog:
+    start_at: beginning
     include: [/pg_log/*.log]
     retry_on_failure:
       enabled: true

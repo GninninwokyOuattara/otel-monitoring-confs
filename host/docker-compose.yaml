@@ -50,7 +50,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - /opt/otelcol/loki:/var/lib/loki
+      - /opt/otelcol/loki:/loki
     networks:
       - otlp
 

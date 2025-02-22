@@ -1,7 +1,7 @@
 # Receivers
 receivers:
   filelog:
-    start_at: end
+    start_at: beginning
     include: [/pg_log/*.log]
     # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:
@@ -12,12 +12,14 @@ receivers:
       line_start_pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}
     operators:
       - type: regex_parser
-        regex: ^(?P<timestamp_field>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>[\s\S]*)
-        timestamp:
-          parse_from: attributes.timestamp_field
-          layout: "%Y-%m-%d %H:%M:%S.%L"
-        # severity:
-        #   parse_from: attributes.sev
+        regex: ^(?P<log_timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<log_severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>[\s\S]*)
+        # Commented because with Loki and out of order ingestion.
+        # - https://github.com/grafana/loki/issues/12935
+        # timestamp:
+        #   parse_from: attributes.timestamp_field
+        #   layout: "%Y-%m-%d %H:%M:%S.%L"
+        severity:
+          parse_from: attributes.log_severity
 
   hostmetrics:
     root_path: /hostfs

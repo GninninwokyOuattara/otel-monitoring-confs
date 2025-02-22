@@ -9,7 +9,7 @@ services:
       - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml
       - /:/hostfs:ro # mount host filesystem,  needed for hostmetrics
       - /oracle/data/log:/pg_log
-      - /var/lib/otelcol:/var/lib/otelcol # This need to be created on the host machine and have permission setup
+      - /opt/otelcol_docker_volumes:/var/lib/otelcol # This need to be created on the host machine and have permission setup
     # ports:
     #   - "4317:4317"
     #   - "4318:4318"

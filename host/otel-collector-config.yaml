@@ -70,7 +70,7 @@ exporters:
 
   prometheus/host:
     endpoint: "0.0.0.0:8889"
-    namespace: host_metrics
+    # namespace: host_metrics
     resource_to_telemetry_conversion:
       enabled: true
   prometheus/others:

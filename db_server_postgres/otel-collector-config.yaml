@@ -1,7 +1,7 @@
 # Receivers
 receivers:
   filelog:
-    start_at: beginning
+    start_at: end
     include: [/pg_log/*.log]
     # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:

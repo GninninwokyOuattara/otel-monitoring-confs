@@ -2,8 +2,8 @@
 receivers:
   filelog:
     start_at: beginning
-    # include: [/pg_log/*.log]
-    include: [/pg_log/postgresql-Thu.log]
+    include: [/pg_log/*.log]
+    # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:
       enabled: true
       max_elapsed_time: 0
@@ -12,13 +12,12 @@ receivers:
       line_start_pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}
     operators:
       - type: regex_parser
-        regex: ^(?P<timestamp_field>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<sev>[A-ZÉÈÊË]+)\s*:\s*(?P<message>[\s\S]*)
-
+        regex: ^(?P<timestamp_field>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>[\s\S]*)
         timestamp:
           parse_from: attributes.timestamp_field
           layout: "%Y-%m-%d %H:%M:%S.%L"
-        severity:
-          parse_from: attributes.sev
+        # severity:
+        #   parse_from: attributes.sev
 
   hostmetrics:
     root_path: /hostfs

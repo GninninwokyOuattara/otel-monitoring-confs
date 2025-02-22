@@ -7,14 +7,14 @@ receivers:
       enabled: true
       max_elapsed_time: 0
     storage: file_storage/filelogreceiver
-    # operators:
-    #   - type: regex_parser
-    #     regex: ^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>.+)$
-    #     timestamp:
-    #       parse_from: attributes.timestamp
-    #       layout: "%Y-%m-%d %H:%M:%S.%L"
-    #     severity:
-    #       parse_from: attributes.severity
+    operators:
+      - type: regex_parser
+        regex: ^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>(?:.|[\r\n](?!\d{4}-\d{2}-\d{2}))*?)(?=\n\d{4}-\d{2}-\d{2}|\Z)
+        timestamp:
+          parse_from: attributes.timestamp
+          layout: "%Y-%m-%d %H:%M:%S.%L"
+        severity:
+          parse_from: attributes.severity
 
   hostmetrics:
     root_path: /hostfs

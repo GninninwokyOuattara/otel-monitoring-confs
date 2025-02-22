@@ -24,7 +24,7 @@ services:
     image: prom/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus-storage:/prometheus
+      - /opt/otelcol/prometheus:/prometheus
     ports:
       - "9090:9090"
     networks:
@@ -37,7 +37,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - grafana-storage:/var/lib/grafana
+      - /opt/otelcol/grafana:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning/:ro
     networks:
       - otlp
@@ -50,14 +50,13 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - loki-storage:/var/lib/loki
+      - /opt/otelcol/loki:/var/lib/loki
     networks:
       - otlp
 
 networks:
   otlp:
-
-volumes:
-  grafana-storage:
-  prometheus-storage:
-  loki-storage:
+# volumes:
+#   grafana-storage:
+#   prometheus-storage:
+#   loki-storage:

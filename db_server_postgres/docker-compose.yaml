@@ -18,6 +18,5 @@ services:
       OTEL_RESOURCE_ATTRIBUTES: service.name=srv_224 #Will be picked up by resource detection
       # - LOG_DIR_PATH=${LOG_DIR_PATH}
       # - REMOTE_COLLECTOR_ENDPOINT=${REMOTE_COLLECTOR_ENDPOINT}
-
-volumes:
-  otelcol-storage:
+# volumes:
+#   otelcol-storage:

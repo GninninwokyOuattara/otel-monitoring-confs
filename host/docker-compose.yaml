@@ -30,10 +30,13 @@ services:
     networks:
       - otlp
   grafana:
+    # depends_on:
+    #   - loki
+    #   - prometheus
     privileged: true
     container_name: grafana
     restart: unless-stopped
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.3.4
     ports:
       - "3000:3000"
     volumes:
@@ -43,14 +46,29 @@ services:
       - otlp
 
   loki:
+    # user: root
     image: grafana/loki:latest
     privileged: true
     container_name: loki
     restart: unless-stopped
     ports:
       - "3100:3100"
+    command: ["-config.file=/etc/loki/loki.yaml"]
     volumes:
+      - ./loki.yaml:/etc/loki/loki.yaml
       - /opt/otelcol/loki:/loki
+    networks:
+      - otlp
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - /opt/otelcol/tempo:/var/tempo
+    ports:
+      - "3200" # tempo
     networks:
       - otlp
 
@@ -60,3 +78,4 @@ networks:
 #   grafana-storage:
 #   prometheus-storage:
 #   loki-storage:
+#   tempo-storage:

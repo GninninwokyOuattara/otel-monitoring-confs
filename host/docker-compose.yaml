@@ -36,7 +36,7 @@ services:
     privileged: true
     container_name: grafana
     restart: unless-stopped
-    image: grafana/grafana:11.3.4
+    image: grafana/grafana:latest
     ports:
       - "3000:3000"
     volumes:

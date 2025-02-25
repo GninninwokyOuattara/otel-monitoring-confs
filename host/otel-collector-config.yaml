@@ -90,7 +90,7 @@ service:
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [debug, otlphttp/logs]
+      exporters: [otlphttp/logs]
 
     metrics/host:
       receivers: [hostmetrics]
@@ -100,9 +100,9 @@ service:
     metrics/others:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, prometheus/others]
+      exporters: [prometheus/others]
 
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlphttp/traces]
+      exporters: [otlphttp/traces]

@@ -21,7 +21,10 @@ services:
     privileged: true
     container_name: prometheus
     restart: unless-stopped
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.2.1
+    command:
+      - --web.enable-otlp-receiver
+      - --config.file=/etc/prometheus/prometheus.yml
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - /opt/otelcol/prometheus:/prometheus

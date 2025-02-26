@@ -70,39 +70,45 @@ exporters:
     tls:
       insecure: true
 
-  debug:
-    # verbosity: detailed
-    verbosity: normal
+  otlphttp:
+    traces_endpoint: "http://tempo:3301"
+    metrics_endpoint: "http://prometheus:9090/api/v1/otlp/v1/metrics"
+    logs_endpoint: "http://loki:3100/otlp"
+    tls:
+      insecure: true
 
-  prometheus/host:
-    endpoint: "0.0.0.0:8889"
-    # namespace: host_metrics
-    resource_to_telemetry_conversion:
-      enabled: true
-  prometheus/others:
-    endpoint: "0.0.0.0:8887"
-    resource_to_telemetry_conversion:
-      enabled: true
+  debug:
+    verbosity: detailed
+
+  # prometheus/host:
+  #   endpoint: "0.0.0.0:8889"
+  #   # namespace: host_metrics
+  #   resource_to_telemetry_conversion:
+  #     enabled: true
+  # prometheus/others:
+  #   endpoint: "0.0.0.0:8887"
+  #   resource_to_telemetry_conversion:
+  #     enabled: true
 
 # Pipelines
 service:
   pipelines:
     logs:
       receivers: [otlp]
-      processors: [batch]
-      exporters: [otlphttp/logs]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp]
 
     metrics/host:
       receivers: [hostmetrics]
       processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [prometheus/host]
+      exporters: [otlphttp]
 
     metrics/others:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [prometheus/others]
+      exporters: [otlphttp]
 
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlphttp/traces]
+      exporters: [otlphttp]

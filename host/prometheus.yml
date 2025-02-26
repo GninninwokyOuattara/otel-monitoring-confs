@@ -28,7 +28,18 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "host-otel-collector"
-    scrape_interval: 10s
-    static_configs:
-      - targets: ["host-otel-collector:8889", "host-otel-collector:8887"]
+  # - job_name: "host-otel-collector"
+  #   scrape_interval: 10s
+  #   static_configs:
+  #     - targets: ["host-otel-collector:8889", "host-otel-collector:8887"]
+otlp:
+  keep_identifying_resource_attributes: true
+  promote_resource_attributes:
+    - service.instance.id
+    - service.name
+    - service.namespace
+  translation_strategy: UnderscoreEscapingWithSuffixes
+
+storage:
+  tsdb:
+    out_of_order_time_window: 2d

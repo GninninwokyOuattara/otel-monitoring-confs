@@ -134,7 +134,7 @@ service:
       exporters: [debug]
 
     logs/pg:
-      receivers: [filelog/pg, filelog/var]
+      receivers: [filelog/pg]
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
     metrics:

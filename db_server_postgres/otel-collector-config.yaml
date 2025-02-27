@@ -126,8 +126,8 @@ service:
   pipelines:
     logs/sys:
       receivers: [filelog/var]
-      processors: [batch]
-      exporters: [debug]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp]
 
     logs/pg:
       receivers: [filelog/pg]

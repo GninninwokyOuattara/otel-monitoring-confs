@@ -44,6 +44,14 @@ receivers:
         mute_process_all_errors: true
       system:
 
+  filelog/var:
+    start_at: beginning
+    include: [/system_log/*]
+    include_file_path: true
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    storage: file_storage/filelogreceiver
 # Processors
 processors:
   memory_limiter:
@@ -57,6 +65,14 @@ processors:
     override: false
 
   batch:
+
+extensions:
+  file_storage/filelogreceiver:
+    create_directory: true
+    directory: /var/lib/otelcol/file_storage/receiver
+  file_storage/otlpoutput:
+    create_directory: true
+    directory: /var/lib/otelcol/file_storage/output
 
 # Exporters
 exporters:
@@ -76,6 +92,10 @@ exporters:
     logs_endpoint: "http://loki:3100/otlp/v1/logs"
     tls:
       insecure: true
+    retry_on_failure:
+      enabled: true
+    sending_queue:
+      storage: file_storage/otlpoutput
 
   debug:
     verbosity: detailed
@@ -92,6 +112,7 @@ exporters:
 
 # Pipelines
 service:
+  extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
     logs:
       receivers: [otlp]

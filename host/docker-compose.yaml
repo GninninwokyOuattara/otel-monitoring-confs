@@ -7,6 +7,8 @@ services:
     volumes:
       - ./otel-collector-config.yaml:/etc/collector/otel-collector-config.yaml:ro
       - /:/hostfs:ro # mount host filesystem,  needed for hostmetrics
+      - /var/log_pub:/system_log:ro
+      - /opt/otelcol:/var/lib/otelcol
     ports:
       - "4317:4317"
       - "4318:4318"

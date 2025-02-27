@@ -23,7 +23,7 @@ receivers:
           parse_from: attributes.log_severity
   filelog/var:
     start_at: beginning
-    include: [/var/log/*]
+    include: [/system_log/*]
     include_file_path: true
     retry_on_failure:
       enabled: true

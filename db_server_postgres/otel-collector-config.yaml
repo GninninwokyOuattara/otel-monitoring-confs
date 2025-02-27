@@ -1,8 +1,8 @@
 # Receivers
 receivers:
-  filelog:
+  filelog/pg:
     start_at: beginning
-    include: [/pg_log/*.log, /var/log/*]
+    include: [/pg_log/*.log]
     include_file_path: true
     # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:
@@ -21,6 +21,14 @@ receivers:
         #   layout: "%Y-%m-%d %H:%M:%S.%L"
         severity:
           parse_from: attributes.log_severity
+  filelog/var:
+    start_at: beginning
+    include: [/var/log/*]
+    include_file_path: true
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    storage: file_storage/filelogreceiver
 
   hostmetrics:
     root_path: /hostfs
@@ -116,7 +124,7 @@ service:
   extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
     logs/pg:
-      receivers: [filelog]
+      receivers: [filelog/pg, filelog/var]
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
     metrics:

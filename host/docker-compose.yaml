@@ -43,8 +43,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /opt/otelcol/grafana/data:/var/lib/grafana # The datas
-      - /opt/otelcol/grafana/home:/usr/share/grafana # The home path of grafana contain acess infos
+      - /opt/otelcol/grafana/data:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning/:ro
     networks:
       - otlp

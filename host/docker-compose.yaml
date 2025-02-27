@@ -43,7 +43,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /opt/otelcol/grafana/data:/var/lib/grafana
+      - /opt/otelcol/grafana:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning/:ro
     networks:
       - otlp

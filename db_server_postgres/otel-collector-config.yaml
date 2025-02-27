@@ -21,19 +21,15 @@ receivers:
         #   layout: "%Y-%m-%d %H:%M:%S.%L"
         severity:
           parse_from: attributes.log_severity
-  # filelog/var:
-  #   start_at: beginning
-  #   include: [/system_log/*]
-  #   include_file_path: true
-  #   retry_on_failure:
-  #     enabled: true
-  #     max_elapsed_time: 0
-  #   storage: file_storage/filelogreceiver
 
-  syslog:
-    tcp:
-      listen_address: "0.0.0.0:54526"
-    protocol: rfc5424
+  filelog/var:
+    start_at: beginning
+    include: [/system_log/*]
+    include_file_path: true
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    storage: file_storage/filelogreceiver
 
   hostmetrics:
     root_path: /hostfs
@@ -129,7 +125,7 @@ service:
   extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
     logs/sys:
-      receivers: [syslog]
+      receivers: [filelog/var]
       processors: [batch]
       exporters: [debug]
 

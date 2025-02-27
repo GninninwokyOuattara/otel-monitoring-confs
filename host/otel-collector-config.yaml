@@ -119,6 +119,11 @@ service:
       processors: [memory_limiter, batch]
       exporters: [otlphttp]
 
+    logs/sys:
+      receivers: [filelog/var]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [oltlphttp]
+
     metrics/host:
       receivers: [hostmetrics]
       processors: [memory_limiter, resourcedetection/env, batch]

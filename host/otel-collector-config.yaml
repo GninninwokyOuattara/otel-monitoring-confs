@@ -73,7 +73,7 @@ exporters:
   otlphttp:
     traces_endpoint: "http://tempo:3301"
     metrics_endpoint: "http://prometheus:9090/api/v1/otlp/v1/metrics"
-    logs_endpoint: "http://loki:3100/otlp"
+    logs_endpoint: "http://loki:3100/otlp/v1/logs"
     tls:
       insecure: true
 

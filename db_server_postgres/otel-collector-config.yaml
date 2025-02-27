@@ -2,7 +2,8 @@
 receivers:
   filelog:
     start_at: beginning
-    include: [/pg_log/*.log]
+    include: [/pg_log/*.log, /var/log/*]
+    include_file_path: true
     # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:
       enabled: true

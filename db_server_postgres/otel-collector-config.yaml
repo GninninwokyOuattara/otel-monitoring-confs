@@ -41,7 +41,9 @@ receivers:
     storage: file_storage/filelogreceiver
     operators:
       - type: key_value_parser
+        on_error: drop_quiet
       - type: key_value_parser
+        on_error: drop_quiet
         parse_from: attributes.msg
       - type: filter
         expr: 'attributes.unit == "heartbeat"' # That's the elastic stuff and should be ignored

@@ -11,6 +11,7 @@ services:
       - /oracle/data/log:/pg_log
       - /opt/otelcol:/var/lib/otelcol # This need to be created on the host machine and have permission setup. This is mainly use for fielog receiver and exporter
       - /var/log_pub:/system_log:ro
+      - /var/log:/var/log:ro
     ports:
       - "54526:54526" # syslog receiver listen address
     #   - "4317:4317"

@@ -34,10 +34,15 @@ receivers:
 
       - type: regex_parser
         regex: msg=audit\((?P<timestamp>\d+\.\d+):(?P<audit_id>\d+)\)
+        timestamp:
+          parse_from: attributes.timestamp
+          layout_type: epoch
+          layout: s.ms
 
       - type: key_value_parser
         on_error: send_quiet
       - type: key_value_parser
+        on_error: send_quiet
         parse_from: attributes.msg
       - type: filter
         expr: 'attributes["unit"] == "heartbeat"'

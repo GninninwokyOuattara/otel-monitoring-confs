@@ -24,13 +24,23 @@ receivers:
       max_elapsed_time: 0
     storage: file_storage/filelogreceiver
     operators:
+      # - type: regex_replace # not yet in the (current) latest release it seems.
+      #   regex: "\x1D"
+      #   replace_with: " "
+      #   field: body
+      - type: add
+        field: body
+        value: EXPR(replace(body, '\x1D', ' ')) # Meanwhile this handle it perfectly, replacing the group separator with a space
+
+      - type: regex_parser
+        regex: msg=audit\((?P<timestamp>\d+\.\d+):(?P<audit_id>\d+)\)
+
       - type: key_value_parser
-        on_error: drop_quiet
+        on_error: send_quiet
       - type: key_value_parser
-        on_error: drop_quiet
         parse_from: attributes.msg
       - type: filter
-        expr: 'attributes["unit"] != nil && attributes["unit"] == "heartbeat"' # That's the elastic stuff and should be ignored
+        expr: 'attributes["unit"] == "heartbeat"'
 
   hostmetrics:
     root_path: /hostfs

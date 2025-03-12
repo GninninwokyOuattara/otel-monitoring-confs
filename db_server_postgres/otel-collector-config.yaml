@@ -22,7 +22,7 @@ receivers:
         severity:
           parse_from: attributes.log_severity
 
-  filelog/var:
+  filelog/systemlog:
     start_at: beginning
     include: [/system_log/*]
     include_file_path: true
@@ -30,6 +30,21 @@ receivers:
       enabled: true
       max_elapsed_time: 0
     storage: file_storage/filelogreceiver
+
+  filelog/audit:
+    start_at: beginning
+    include: [/var/log/audit/audit.log] # Make sure acl permissions are set for user 10001
+    include_file_path: true
+    retry_on_failure:
+      enabled: true
+      max_elapsed_time: 0
+    storage: file_storage/filelogreceiver
+    operators:
+      - type: key_value_parser
+      - type: key_value_parser
+        parse_from: attributes.msg
+      - type: filter
+        expr: 'attributes.unit == "heartbeat"' # That's the elastic stuff and should be ignored
 
   hostmetrics:
     root_path: /hostfs
@@ -124,8 +139,13 @@ exporters:
 service:
   extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
+    logs/audit:
+      receivers: [filelog/audit]
+      processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp]
+
     logs/sys:
-      receivers: [filelog/var]
+      receivers: [filelog/systemlog]
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
 

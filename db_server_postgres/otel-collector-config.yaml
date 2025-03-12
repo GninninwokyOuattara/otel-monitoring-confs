@@ -1,10 +1,8 @@
-# Receivers
 receivers:
   filelog/pg:
     start_at: beginning
     include: [/pg_log/*.log]
     include_file_path: true
-    # include: [/pg_log/postgresql-Thu.log]
     retry_on_failure:
       enabled: true
       max_elapsed_time: 0
@@ -14,22 +12,8 @@ receivers:
     operators:
       - type: regex_parser
         regex: ^(?P<log_timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<timezone>EST) \[(?P<process_id>\d+)\] (?P<log_severity>[A-ZÉÈÊË]+)\s*:\s*(?P<message>[\s\S]*)
-        # Commented because with Loki and out of order ingestion.
-        # - https://github.com/grafana/loki/issues/12935
-        # timestamp:
-        #   parse_from: attributes.timestamp_field
-        #   layout: "%Y-%m-%d %H:%M:%S.%L"
         severity:
           parse_from: attributes.log_severity
-
-  filelog/systemlog:
-    start_at: beginning
-    include: [/system_log/*]
-    include_file_path: true
-    retry_on_failure:
-      enabled: true
-      max_elapsed_time: 0
-    storage: file_storage/filelogreceiver
 
   filelog/audit:
     start_at: beginning
@@ -100,7 +84,6 @@ extensions:
     create_directory: true
     directory: /var/lib/otelcol/file_storage/output
 
-# Processors
 processors:
   memory_limiter:
     check_interval: 1s
@@ -114,7 +97,6 @@ processors:
 
   batch:
 
-# Exporters
 exporters:
   otlp:
     endpoint: "http://192.168.1.232:4317"
@@ -137,7 +119,6 @@ exporters:
   debug:
     verbosity: normal
 
-# Pipelines
 service:
   extensions: [file_storage/filelogreceiver, file_storage/otlpoutput]
   pipelines:
@@ -146,15 +127,11 @@ service:
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
 
-    logs/sys:
-      receivers: [filelog/systemlog]
-      processors: [memory_limiter, resourcedetection/env, batch]
-      exporters: [otlp]
-
     logs/pg:
       receivers: [filelog/pg]
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
+
     metrics:
       receivers: [hostmetrics, postgresql]
       processors: [memory_limiter, resourcedetection/env, batch]

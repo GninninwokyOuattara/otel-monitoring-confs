@@ -32,20 +32,29 @@ receivers:
         field: body
         value: EXPR(replace(body, '\x1D', ' ')) # Meanwhile this handle it perfectly, replacing the group separator with a space
 
-      - type: regex_parser
-        regex: msg=audit\((?P<timestamp>\d+\.\d+):(?P<audit_id>\d+)\)
-        timestamp:
-          parse_from: attributes.timestamp
-          layout_type: epoch
-          layout: s.ms
-
+      # Will flatten the log message and extract every key=value pairs.
       - type: key_value_parser
         on_error: send_quiet
       - type: key_value_parser
         on_error: send_quiet
         parse_from: attributes.msg
+
+      # Remove audit log that do not contain a key indicating we set the rules for monitoring it.
       - type: filter
-        expr: 'attributes["unit"] == "heartbeat"'
+        expr: 'attributes["key"] == nil' #Filter out logs without a key linked
+
+      # Set timestamp of the logs to the produced timestamp and promote severity to the key (will be updated later)
+      - type: regex_parser
+        regex: msg=audit\((?P<timestamp>\d+\.\d+):(?P<audit_id>\d+)\)
+        timestamp:
+          parse_from: attributes["timestamp"]
+          layout_type: epoch
+          layout: s.ms
+        severity:
+          parse_from: attributes["key"]
+
+      # - type: filter
+      #   expr: 'attributes["unit"] == "heartbeat"'
 
   hostmetrics:
     root_path: /hostfs

@@ -39,6 +39,9 @@ receivers:
         on_error: send_quiet
         parse_from: attributes.msg
 
+      - type: filter
+        expr: 'attributes["unit"] == "heartbeat"' # kills hearbeat on sight !
+
       # Will set a value for the severity field
       - type: add
         field: attributes["audit_key"]

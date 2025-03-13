@@ -39,9 +39,10 @@ receivers:
         on_error: send_quiet
         parse_from: attributes.msg
 
-      # Remove audit log that do not contain a key indicating we set the rules for monitoring it.
-      - type: filter
-        expr: 'attributes["key"] == nil' #Filter out logs without a key linked
+      # Will set a value for the severity field
+      - type: add
+        field: attributes["audit_key"]
+        value: EXPR(attributes["key"] ?? "none")
 
       # Set timestamp of the logs to the produced timestamp and promote severity to the key (will be updated later)
       - type: regex_parser
@@ -51,10 +52,25 @@ receivers:
           layout_type: epoch
           layout: s.ms
         severity:
-          parse_from: attributes["key"]
-
-      # - type: filter
-      #   expr: 'attributes["unit"] == "heartbeat"'
+          parse_from: attributes["audit_key"]
+          mapping:
+            error:
+              - privileges-config-changes
+              - access-audit-trail
+              - iptables_exec
+            warn:
+              - maybe-escalation
+              - elevated-privs-session
+              - changes-accounts
+              - time-change
+              - modification-audit
+              - suspicious_activity
+              - sbin_suspicious
+            warn2:
+              - permissions_mod
+              - unsuccessful_file_access
+            info:
+              - none
 
   hostmetrics:
     root_path: /hostfs

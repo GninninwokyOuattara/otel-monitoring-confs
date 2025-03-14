@@ -47,6 +47,7 @@ services:
     volumes:
       - /opt/otelcol/grafana:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning/:ro
+      - ./grafana.ini:/etc/grafana/grafana.ini
     networks:
       - otlp
 

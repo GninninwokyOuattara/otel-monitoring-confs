@@ -107,6 +107,15 @@ receivers:
       processes:
       process:
         mute_process_all_errors: true
+        metrics:
+          process.cpu.utilization:
+            enabled: true
+          process.memory.utilization:
+            enabled: true
+          process.threads:
+            enabled: true
+          process.paging.faults:
+            enabled: true
       system:
 
   postgresql:
@@ -137,6 +146,24 @@ processors:
     detectors: [env]
     timeout: 2s
     override: false
+
+  resourcedetection/system:
+    detectors: ["system"]
+    system:
+      hostname_sources: ["os"]
+
+  transform:
+    metric_statements:
+      - context: datapoint
+        statements:
+          - set(attributes["host.name"], resource.attributes["host.name"])
+          - set(attributes["process.command"], resource.attributes["process.command"])
+          - set(attributes["process.command_line"], resource.attributes["process.command_line"])
+          - set(attributes["process.executable.name"], resource.attributes["process.executable.name"])
+          - set(attributes["process.executable.path"], resource.attributes["process.executable.path"])
+          - set(attributes["process.owner"], resource.attributes["process.owner"])
+          - set(attributes["process.parent_pid"], resource.attributes["process.parent_pid"])
+          - set(attributes["process.pid"], resource.attributes["process.pid"])
 
   batch:
 
@@ -175,7 +202,19 @@ service:
       processors: [memory_limiter, resourcedetection/env, batch]
       exporters: [otlp]
 
-    metrics:
-      receivers: [hostmetrics, postgresql]
+    metrics/pg:
+      receivers: [postgresql]
       processors: [memory_limiter, resourcedetection/env, batch]
+      exporters: [otlp]
+
+    metrics/host:
+      receivers: [hostmetrics]
+      processors:
+        [
+          memory_limiter,
+          resourcedetection/env,
+          resourcedetection/system,
+          transform,
+          batch,
+        ]
       exporters: [otlp]

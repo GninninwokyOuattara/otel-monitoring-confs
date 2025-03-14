@@ -1,6 +1,7 @@
 services:
   otel-collector:
-    privileged: true
+    # privileged: true
+    restart: unless-stopped
     # network_mode: "host"
     container_name: otel-collector
     image: otel/opentelemetry-collector-contrib:latest
